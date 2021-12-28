@@ -2,12 +2,11 @@ const TeleBot = require('telebot');
 const axios = require('axios');
 const cron = require('node-cron');
 const dotenv = require('dotenv');
+const fs = require('fs');
 
 dotenv.config();
 
 const bot = new TeleBot(process.env.BOT_KEY);
-
-const userList = [];
 
 bot.on('/hello', (msg) => {
     return bot.sendMessage(msg.from.id, `E ai arrombado, ${ msg.from.first_name }!`);
@@ -53,9 +52,15 @@ const numbersMatrix = [
 ];
 
 bot.on('/meesquece', (msg) => {
+
+    let rawUserList = fs.readFileSync('userList.json');
+    const userList = JSON.parse(rawUserList);
+
     const index = userList.indexOf(msg.from.id);
     if (index !== -1) {
         userList.splice(index, 1);
+        const data = JSON.stringify(userList);
+        fs.writeFileSync('userList.json', data);
         return bot.sendMessage(msg.from.id, 'Ta bom po. Já não aviso.');
     }
     
@@ -76,6 +81,9 @@ cron.schedule('0 * * * *', async () => {
 
         console.log(acertosList);
 
+        let rawUserList = fs.readFileSync('userList.json');
+        const userList = JSON.parse(rawUserList);
+
         userList.forEach(user => {
             const messages = [];
             acertosList.forEach(acerto => {
@@ -95,10 +103,17 @@ cron.schedule('0 * * * *', async () => {
     }
 });
 
-bot.on('/meavisa', (msg) => {
+bot.on('/start', (msg) => {
+
+    let rawUserList = fs.readFileSync('userList.json');
+    const userList = JSON.parse(rawUserList);
+
     if(!userList.find(user => user === msg.from.id)) {
         userList.push(msg.from.id);
-        console.log(userList);
+
+        const data = JSON.stringify(userList);
+        fs.writeFileSync('userList.json', data);
+
         return bot.sendMessage(msg.from.id, 'Avisarei quando sair o resultado seu fudido.');
     }
     return bot.sendMessage(msg.from.id, 'Já falei que ia avisar vc arrombado!!');
