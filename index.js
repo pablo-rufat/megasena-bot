@@ -103,8 +103,7 @@ cron.schedule('0 * * * *', async () => {
     }
 });
 
-bot.on('/start', (msg) => {
-
+const addToList = (msg) => {
     let rawUserList = fs.readFileSync('userList.json');
     const userList = JSON.parse(rawUserList);
 
@@ -117,6 +116,14 @@ bot.on('/start', (msg) => {
         return bot.sendMessage(msg.from.id, 'Avisarei quando sair o resultado seu fudido.');
     }
     return bot.sendMessage(msg.from.id, 'Já falei que ia avisar vc arrombado!!');
+};
+
+bot.on('/start', (msg) => {
+    return addToList(msg);
+});
+
+bot.on('/meavisa', (msg) => {
+    return addToList(msg);
 });
 
 bot.on('/ganhei', async (msg) => {
