@@ -17,3 +17,6 @@
 ]
 ```
 - adicionar o token que vc gerou no @BotFather de Telegram na variavel de ambiente `BOT_KEY` do arquivo `.env`.
+
+### Acknowledgments
+- Para obter os resultados dos sorteios foi usada a [API](https://loteriascaixa-api.herokuapp.com/api) disponivilizada por [Gustavo Alves](https://github.com/guto-alves). O repositorio com o projeto está [aqui](https://github.com/guto-alves/loterias-api).
